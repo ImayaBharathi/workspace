@@ -309,7 +309,7 @@ export function Templates() {
                 className="resize-none"
               />
               <p className="text-xs text-gray-500 mt-1">
-                Use double curly braces for variables, e.g., {{brand_name}}, {{collaboration_type}}
+                Use double curly braces for variables, e.g, Apple, collaboration_type
               </p>
             </div>
             {formData.variables.length > 0 && (

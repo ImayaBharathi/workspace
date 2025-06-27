@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { getLeadById, updateLeadStatus, respondToLead, type Lead } from "@/api/leads"
 import { getTemplates, type Template } from "@/api/templates"
 import { useToast } from "@/hooks/useToast"
-import { ArrowLeft, Send, CheckCircle, XCircle, Clock, MessageSquare, Brain, Building, Calendar, DollarSign } from "lucide-react"
+import { ArrowLeft, Send, CheckCircle, XCircle, Clock, MessageSquare, Brain, Building, Calendar, DollarSign, RefreshCw } from "lucide-react"
 
 export function LeadDetail() {
   const { id } = useParams<{ id: string }>()
@@ -19,6 +19,7 @@ export function LeadDetail() {
   const [responseText, setResponseText] = useState("")
   const [selectedTemplate, setSelectedTemplate] = useState("")
   const [sending, setSending] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const { toast } = useToast()
 
   useEffect(() => {
@@ -96,11 +97,63 @@ export function LeadDetail() {
     }
   }
 
+  const handleRefreshConversation = async () => {
+    if (!id) return
+
+    setRefreshing(true)
+    try {
+      console.log('Refreshing conversation...')
+      const response = await getLeadById(id)
+      setLead((response as any).lead)
+      toast({
+        title: "Success",
+        description: "Conversation refreshed",
+      })
+    } catch (error) {
+      console.error('Error refreshing conversation:', error)
+      toast({
+        title: "Error",
+        description: "Failed to refresh conversation",
+        variant: "destructive",
+      })
+    } finally {
+      setRefreshing(false)
+    }
+  }
+
+  const replaceTemplateVariables = (content: string, lead: Lead) => {
+    let replacedContent = content
+    
+    // Replace common variables
+    replacedContent = replacedContent.replace(/\{brand_name\}/g, lead.brandName)
+    replacedContent = replacedContent.replace(/\{collaboration_type\}/g, lead.collaborationType)
+    replacedContent = replacedContent.replace(/\{budget_range\}/g, lead.budgetRange)
+    
+    // Add rate card info for rate card templates
+    if (content.includes('{rate_card}')) {
+      const rateCardInfo = `
+📋 My Rate Card:
+• Instagram Post: $500-1,000
+• Instagram Story (3 slides): $300-500
+• Instagram Reel: $800-1,200
+• TikTok Video: $600-1,000
+• YouTube Integration: $1,500-2,500
+• Long-term Partnership: Custom pricing available
+
+Package deals and bulk collaborations are available with discounts.`
+      
+      replacedContent = replacedContent.replace(/\{rate_card\}/g, rateCardInfo)
+    }
+    
+    return replacedContent
+  }
+
   const handleTemplateSelect = (templateId: string) => {
     const template = templates.find(t => t._id === templateId)
-    if (template) {
+    if (template && lead) {
       setSelectedTemplate(templateId)
-      setResponseText(template.content)
+      const processedContent = replaceTemplateVariables(template.content, lead)
+      setResponseText(processedContent)
     }
   }
 
@@ -183,9 +236,20 @@ export function LeadDetail() {
           {/* Conversation */}
           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <MessageSquare className="h-5 w-5" />
-                <span>Conversation</span>
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <MessageSquare className="h-5 w-5" />
+                  <span>Conversation</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleRefreshConversation}
+                  disabled={refreshing}
+                  className="h-8 w-8 p-0"
+                >
+                  <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>

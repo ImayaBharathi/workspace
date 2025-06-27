@@ -116,3 +116,19 @@ export const deleteLead = async (id: string) => {
     throw new Error(error?.response?.data?.error || error.message);
   }
 }
+
+// Description: Add message to lead (from brand or influencer)
+// Endpoint: POST /api/leads/:id/message
+// Request: { sender: string, content: string }
+// Response: { success: boolean, message: string, lead: Lead }
+export const addMessageToLead = async (id: string, messageData: Omit<Message, '_id'>) => {
+  try {
+    const response = await api.post(`/api/leads/${id}/message`, { 
+      sender: messageData.sender,
+      content: messageData.content 
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.error || error.message);
+  }
+}

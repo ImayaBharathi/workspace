@@ -98,6 +98,7 @@ export function Leads() {
     return `${diffInDays}d ago`
   }
 
+
   if (loading) {
     return (
       <div className="space-y-6">

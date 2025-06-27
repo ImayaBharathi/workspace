@@ -13,6 +13,8 @@ import { LeadDetail } from "./pages/LeadDetail"
 import { Templates } from "./pages/Templates"
 import { Settings } from "./pages/Settings"
 import { Analytics } from "./pages/Analytics"
+import { ConversationManager } from "./pages/ConversationManager"
+import { AddLead } from "./pages/AddLead"
 
 function App() {
   return (
@@ -25,7 +27,9 @@ function App() {
           <Route path="/" element={<ProtectedRoute> <Layout /> </ProtectedRoute>}>
             <Route index element={<Dashboard />} />
             <Route path="leads" element={<Leads />} />
+            <Route path="leads/add" element={<AddLead />} />
             <Route path="leads/:id" element={<LeadDetail />} />
+            <Route path="leads/:id/conversation-manager" element={<ConversationManager />} />
             <Route path="templates" element={<Templates />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="settings" element={<Settings />} />

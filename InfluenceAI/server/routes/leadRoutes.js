@@ -197,6 +197,57 @@ router.post('/:id/respond', async (req, res) => {
   }
 });
 
+// POST /api/leads/:id/message - Add a message to a lead (from brand or influencer)
+router.post('/:id/message', async (req, res) => {
+  try {
+    console.log(`POST /api/leads/${req.params.id}/message - User: ${req.user._id}`, req.body);
+    
+    const { sender, content } = req.body;
+    if (!sender || !content) {
+      return res.status(400).json({
+        success: false,
+        error: 'Sender and content are required'
+      });
+    }
+
+    const validSenders = ['brand', 'influencer'];
+    if (!validSenders.includes(sender)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid sender. Must be one of: ${validSenders.join(', ')}`
+      });
+    }
+
+    const messageData = {
+      sender,
+      content,
+      timestamp: new Date(),
+      isRead: true
+    };
+
+    const lead = await LeadService.addMessage(req.user._id, req.params.id, messageData);
+    
+    if (!lead) {
+      return res.status(404).json({
+        success: false,
+        error: 'Lead not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Message added successfully',
+      lead
+    });
+  } catch (error) {
+    console.error(`Error in POST /api/leads/${req.params.id}/message:`, error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // DELETE /api/leads/:id - Delete a lead
 router.delete('/:id', async (req, res) => {
   try {

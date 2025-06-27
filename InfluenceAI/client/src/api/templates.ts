@@ -34,7 +34,7 @@ export const getTemplates = () => {
             _id: '2',
             name: 'Rate Card Request',
             category: 'qualifying',
-            content: 'Thank you for your interest in collaborating with me! I\'d love to work with {{brand_name}}. Please find my rate card attached. For {{collaboration_type}}, my rate is typically in the range mentioned. Let me know if you\'d like to discuss further!',
+            content: 'Thank you for your interest in collaborating with me! I\'d love to work with {{brand_name}}. Please find my rate card attached. For {{collaboration_type}}, my rate is typically in the range mentioned. Let me know if you\'d like to discuss further! {rate_card}',
             variables: ['brand_name', 'collaboration_type'],
             createdAt: '2024-01-01T00:00:00Z',
             updatedAt: '2024-01-01T00:00:00Z'

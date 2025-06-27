@@ -23,10 +23,15 @@ export default defineConfig({
     },
     allowedHosts: [
       'localhost',
-      '.pythagora.ai'
+      '.pythagora.ai',
+      '4171-106-219-179-129.ngrok-free.app',
+      'c1d1-106-219-179-129.ngrok-free.app'
     ],
     watch: {
       ignored: ['**/node_modules/**', '**/dist/**', '**/public/**', '**/log/**']
     }
   },
 })
+
+
+// user name - kanakamedaladeepika1@gmail.com password - Saibaba@123
